@@ -27,6 +27,7 @@ async function run() {
     await client.connect();
     const db = client.db("drivenow")
     const addcarCollection = db.collection("addcar")
+    const bookingCollection = db.collection("bookings");
 
 
 
@@ -39,19 +40,26 @@ async function run() {
 
     app.post('/addcar', async (req, res) => {
       const addcarData = req.body;
-      console.log(addcarData);
-      
+      console.log(addcarData);      
       const result = await addcarCollection.insertOne(addcarData);
-
       res.json(result);
     })
 
 
-    // app.get('/destination/:id', async (req, res) => {
-    //   const { id } = req.params
-    //   const result = await destinationCollection.findOne({ _id: new ObjectId(id) })
-    //   res.json(result)
-    // })
+
+    app.get('/addcar/:id', async (req, res) => {
+      const { id } = req.params
+      const result = await addcarCollection.findOne({ _id: new ObjectId(id) })
+      res.json(result)
+    })
+
+    app.post("/booking", async (req, res) => {
+      const bookingData = req.body;
+      const result = await bookingCollection.insertOne(bookingData);
+
+      res.json(result);
+    });
+
 
     // app.patch('/destination/:id', async (req, res) => {
     //   const { id } = req.params
