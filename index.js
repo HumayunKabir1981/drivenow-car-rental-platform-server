@@ -40,7 +40,7 @@ async function run() {
 
     app.post('/addcar', async (req, res) => {
       const addcarData = req.body;
-      console.log(addcarData);      
+      console.log(addcarData);
       const result = await addcarCollection.insertOne(addcarData);
       res.json(result);
     })
@@ -53,7 +53,7 @@ async function run() {
       res.json(result)
     })
 
-     app.get('/booking/:id', async (req, res) => {
+    app.get('/booking/:id', async (req, res) => {
       const result = await bookingCollection.find().toArray()
       res.json(result)
 
@@ -66,7 +66,32 @@ async function run() {
 
       res.json(result);
     });
+    app.delete("/booking/:id", async (req, res) => {
+      try {
+        const { id } = req.params;
 
+        const result = await bookingCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
+
+        if (result.deletedCount === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "Booking not found",
+          });
+        }
+
+        res.json({
+          success: true,
+          message: "Booking cancelled successfully",
+        });
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          message: "Server error",
+        });
+      }
+    });
 
     app.patch('/addcar/:id', async (req, res) => {
       const { id } = req.params
